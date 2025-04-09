@@ -40,7 +40,7 @@ def black_scholes_greeks(S, K, T, r, sigma, option_type="call"):
 import streamlit as st
 
 st.markdown("<h1 style='color:#0072B5; font-family:sans-serif;'>🌀 Gamma Bosphorus Option Pricing Tool</h1>", unsafe_allow_html=True)
-st.markdown("Built with 🧠 Streamlit · Powered by math · Designed by Hasan", unsafe_allow_html=True)
+st.markdown("Built with 🧠 Streamlit · Designed by Hasanagodre", unsafe_allow_html=True)
 
 S = st.number_input("Underlying Price (S)", value=100.0)
 K = st.number_input("Strike Price (K)", value=105.0)
