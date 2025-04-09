@@ -1,15 +1,19 @@
 import math
-import argparse
-from scipy.stats import norm
+
+def norm_cdf(x):
+    return (1.0 + math.erf(x / math.sqrt(2.0))) / 2.0
+
+def norm_pdf(x):
+    return math.exp(-0.5 * x * x) / math.sqrt(2 * math.pi)
 
 def black_scholes(S, K, T, r, sigma, option_type="call"):
     d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
     d2 = d1 - sigma * math.sqrt(T)
 
     if option_type.lower() == "call":
-        price = S * norm.cdf(d1) - K * math.exp(-r * T) * norm.cdf(d2)
+        price = S * norm_cdf(d1) - K * math.exp(-r * T) * norm_cdf(d2)
     elif option_type.lower() == "put":
-        price = K * math.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+        price = K * math.exp(-r * T) * norm_cdf(-d2) - S * norm_cdf(-d1)
     else:
         raise ValueError("option_type must be 'call' or 'put'")
 
@@ -20,16 +24,16 @@ def black_scholes_greeks(S, K, T, r, sigma, option_type="call"):
     d2 = d1 - sigma * math.sqrt(T)
 
     if option_type.lower() == "call":
-        delta = norm.cdf(d1)
-        theta = (-S * norm.pdf(d1) * sigma / (2 * math.sqrt(T))) - r * K * math.exp(-r * T) * norm.cdf(d2)
+        delta = norm_cdf(d1)
+        theta = (-S * norm_pdf(d1) * sigma / (2 * math.sqrt(T))) - r * K * math.exp(-r * T) * norm_cdf(d2)
     elif option_type.lower() == "put":
-        delta = norm.cdf(d1) - 1
-        theta = (-S * norm.pdf(d1) * sigma / (2 * math.sqrt(T))) + r * K * math.exp(-r * T) * norm.cdf(-d2)
+        delta = norm_cdf(d1) - 1
+        theta = (-S * norm_pdf(d1) * sigma / (2 * math.sqrt(T))) + r * K * math.exp(-r * T) * norm_cdf(-d2)
     else:
         raise ValueError("option_type must be 'call' or 'put'")
 
-    gamma = norm.pdf(d1) / (S * sigma * math.sqrt(T))
-    vega = S * norm.pdf(d1) * math.sqrt(T) / 100  # Per 1% change in volatility
+    gamma = norm_pdf(d1) / (S * sigma * math.sqrt(T))
+    vega = S * norm_pdf(d1) * math.sqrt(T) / 100  # Per 1% change in volatility
 
     return delta, gamma, theta, vega
 
