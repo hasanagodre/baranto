@@ -58,5 +58,14 @@ if st.button("Calculate"):
         st.write(f"**Gamma:** {gamma:.4f}")
         st.write(f"**Theta:** {theta:.4f}")
         st.write(f"**Vega:** {vega:.4f}")
+
+        price_no_vol = black_scholes(S, K, T, r, 0.0001, option_type)
+        price_no_r = black_scholes(S, K, T, 0.0, sigma, option_type)
+        intrinsic = max(0, S - K) if option_type == "call" else max(0, K - S)
+
+        st.subheader("🔍 Component Effects")
+        st.write(f"📉 Volatility Effect: {price - price_no_vol:.2f} $")
+        st.write(f"💰 Interest Rate Effect: {price - price_no_r:.2f} $")
+        st.write(f"⏳ Time Value (vs intrinsic): {price - intrinsic:.2f} $")
     except Exception as e:
         st.error(f"Error: {e}")
